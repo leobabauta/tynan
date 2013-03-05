@@ -54,13 +54,13 @@ class Traveler {
 		$DBpass = "root";
 		$DBName = "root_trips";
 		$table = "travelers";
-		$link = mysqli_connect('$DBhost', '$DBuser', '$DBpass', '$DBName');
+		$link = mysqli_connect($DBhost, $DBuser, $DBpass, $DBName);
 
 		if (!$link) {
     		die('Connect Error (' . mysqli_connect_errno() . ') '
             . mysqli_connect_error());
 		}
-		echo 'Success... ' . mysqli_get_host_info($link) . "\n";
+		echo 'Success... ' . mysqli_get_host_info($link) . "<br />";
 
   		// Insert into table
 		$sqlquery = "INSERT INTO $table
@@ -69,8 +69,9 @@ class Traveler {
 		$results = mysql_query($sqlquery);
 
   		// Close connection
-		mysqli_close($link)
+		mysqli_close($link);
 	}
+}
 
 $trip1 = new Trip("Japan", 10);
 $trip1->display();
