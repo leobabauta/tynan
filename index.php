@@ -41,31 +41,35 @@ class Traveler {
 	public $Sex;
 
 	public function __construct($FirstName, $LastName, $Age, $Sex) {
-  		$this->UserId = $UserId;
   		$this->FirstName = $FirstName;
   		$this->LastName = $LastName;
   		$this->Age = $Age;
   		$this->Sex = $Sex;
   	}
 
-  	public function save {
-  		// Connect to mysql database
-  		$con=mysqli_connect("localhost:8888","leobabauta","sexyabbot","root_trips");
-		// Check connection
-		if (mysqli_connect_errno()) {
-  			echo "Failed to connect to MySQL: " . mysqli_connect_error();
-  		}
+  	public function save() {
+  		// Database info and connection
+  		$DBhost = "localhost";
+		$DBuser = "root";
+		$DBpass = "root";
+		$DBName = "root_trips";
+		$table = "travelers";
+		$link = mysqli_connect('$DBhost', '$DBuser', '$DBpass', '$DBName');
 
-  		// Add new record to 'travelers' table
-		$sql="INSERT INTO travelers (FirstName, LastName, Age, Sex)
-		VALUES ($FirstName, $LastName, $Age, $Sex)");
+		if (!$link) {
+    		die('Connect Error (' . mysqli_connect_errno() . ') '
+            . mysqli_connect_error());
+		}
+		echo 'Success... ' . mysqli_get_host_info($link) . "\n";
 
-		if (!mysqli_query($con,$sql)) {
-  			die('Error: ' . mysqli_error());
-  		}
-		echo "1 record added";
+  		// Insert into table
+		$sqlquery = "INSERT INTO $table
+		VALUES('$FirstName','$LastName','$Age','$Sex')";
 
-		mysqli_close($con);
+		$results = mysql_query($sqlquery);
+
+  		// Close connection
+		mysqli_close($link)
 	}
 
 $trip1 = new Trip("Japan", 10);
