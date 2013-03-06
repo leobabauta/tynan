@@ -63,10 +63,10 @@ class Traveler {
 		echo 'Success... ' . mysqli_get_host_info($link) . "<br />";
 
   		// Insert into table
-		$sqlquery = "INSERT INTO $table
+		$sqlquery = "INSERT INTO $table (FirstName,LastName,Age, Sex) 
 		VALUES('$FirstName','$LastName','$Age','$Sex')";
 
-		$results = mysql_query($sqlquery);
+		$results = mysqli_query($sqlquery);
 
   		// Close connection
 		mysqli_close($link);
