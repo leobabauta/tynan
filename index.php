@@ -47,14 +47,26 @@ class Traveler {
   		$this->Age = $Age;
   		$this->Sex = $Sex;
  	}
-
+ 
   	public function save() {
   		// testing whether variables actually contain data
+  		echo $this->FirstName . " is set<br />";
+  		echo $this->LastName . " is set<br />";
+  		echo $this->Age . " is set<br />";
+  		echo $this->Sex . " is set<br />";
+ 
+  		// putting data into variables
+  		$FirstName = $this->FirstName;
+  		$LastName = $this->LastName;
+  		$Age = $this->Age;
+  		$Sex = $this->Sex;
+
+  		// testing again whether variables actually contain data
   		echo $FirstName . " is set<br />";
-  		echo $LasttName . " is set<br />";
+  		echo $LastName . " is set<br />";
   		echo $Age . " is set<br />";
   		echo $Sex . " is set<br />";
- 
+
   		// Database info and connection
   		$DBhost = "localhost";
 		$DBuser = "root";
@@ -70,10 +82,9 @@ class Traveler {
 		echo 'Success... ' . mysqli_get_host_info($link) . "<br />";
 
   		// Insert into table
-		$sqlquery = "INSERT INTO $table ('FirstName','LastName','Age','Sex') 
+		$sqlquery = "INSERT INTO $table (FirstName,LastName,Age,Sex) 
 		VALUES('$FirstName','$LastName','$Age','$Sex')";
 
-		echo "$sqlquery";
 		$results = mysqli_query($sqlquery) or die(mysqli_error());
 
   		// Close connection
