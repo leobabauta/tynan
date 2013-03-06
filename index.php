@@ -49,19 +49,13 @@ class Traveler {
  	}
  
   	public function save() {
-  		// testing whether variables actually contain data
-  		echo $this->FirstName . " is set<br />";
-  		echo $this->LastName . " is set<br />";
-  		echo $this->Age . " is set<br />";
-  		echo $this->Sex . " is set<br />";
- 
   		// putting data into variables
   		$FirstName = $this->FirstName;
   		$LastName = $this->LastName;
   		$Age = $this->Age;
   		$Sex = $this->Sex;
 
-  		// testing again whether variables actually contain data
+  		// Debugging - testing whether variables actually contain data - it works!
   		echo $FirstName . " is set<br />";
   		echo $LastName . " is set<br />";
   		echo $Age . " is set<br />";
@@ -81,11 +75,20 @@ class Traveler {
 		}
 		echo 'Success... ' . mysqli_get_host_info($link) . "<br />";
 
-  		// Insert into table
-		$sqlquery = "INSERT INTO $table (FirstName,LastName,Age,Sex) 
-		VALUES('$FirstName','$LastName','$Age','$Sex')";
+  		// Insert into table - now trying mysqli_real_escape_string
+		$sqlquery = "INSERT INTO $table
+		(FirstName,LastName,Age,Sex) VALUES('" . mysqli_real_escape_string($FirstName) . "',
+		'" . mysqli_real_escape_string($LastName) . "',
+		'" . mysqli_real_escape_string($Age) . "',
+		'" . mysqli_real_escape_string($Sex) . "')";
 
-		$results = mysqli_query($sqlquery) or die(mysqli_error());
+  		// Debugging - looking for output of query
+		echo $sqlquery . "<br />";
+
+		$results = mysqli_query($sqlquery);
+
+  		// Debugging - Trying to see if there are any mysqli errors
+		echo $mysqli->error;
 
   		// Close connection
 		mysqli_close($link);
