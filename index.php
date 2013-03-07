@@ -70,7 +70,7 @@ class Traveler {
 		}
 		echo 'Success... ' . mysqli_get_host_info($link) . "<br />";
 
-  		// Escape strings
+  		// Escape strings (fixed)
   		$FirstName = mysqli_real_escape_string($link, $FirstName);
   		$LastName = mysqli_real_escape_string($link, $LastName);
   		$Age = mysqli_real_escape_string($link, $Age);
