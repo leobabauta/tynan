@@ -16,6 +16,7 @@ class Trip {
   	}
 
   	public function display() {
+  		$travelerString ="";
   		$travelerCount = count($this->travelers);
   		if ($travelerCount === 0) {
 			$travelerString = "no one";
@@ -55,12 +56,6 @@ class Traveler {
   		$Age = $this->Age;
   		$Sex = $this->Sex;
 
-  		// Debugging - testing whether variables actually contain data - it works!
-  		echo $FirstName . " is set<br />";
-  		echo $LastName . " is set<br />";
-  		echo $Age . " is set<br />";
-  		echo $Sex . " is set<br />";
-
   		// Database info and connection
   		$DBhost = "localhost";
 		$DBuser = "root";
@@ -75,20 +70,17 @@ class Traveler {
 		}
 		echo 'Success... ' . mysqli_get_host_info($link) . "<br />";
 
-  		// Insert into table - now trying mysqli_real_escape_string
+  		// Escape strings
+  		$FirstName = mysqli_real_escape_string($link, $FirstName);
+  		$LastName = mysqli_real_escape_string($link, $LastName);
+  		$Age = mysqli_real_escape_string($link, $Age);
+  		$Sex = mysqli_real_escape_string($link, $Sex);
+
+  		// Insert into table
 		$sqlquery = "INSERT INTO $table
-		(FirstName,LastName,Age,Sex) VALUES('" . mysqli_real_escape_string($FirstName) . "',
-		'" . mysqli_real_escape_string($LastName) . "',
-		'" . mysqli_real_escape_string($Age) . "',
-		'" . mysqli_real_escape_string($Sex) . "')";
+		(FirstName,LastName,Age,Sex) VALUES('$FirstName','$LastName','$Age','Sex')";
 
-  		// Debugging - looking for output of query
-		echo $sqlquery . "<br />";
-
-		$results = mysqli_query($sqlquery);
-
-  		// Debugging - Trying to see if there are any mysqli errors
-		echo $mysqli->error;
+		$results = mysqli_query($link, $sqlquery);
 
   		// Close connection
 		mysqli_close($link);
