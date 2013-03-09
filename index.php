@@ -50,26 +50,42 @@ class Traveler {
   		$this->Sex = $Sex;
  	}
  
+ 	public function dupecheck() {
+		// checks to see if there's already a record with same first & last name
+		global $table;
+		global $link;
+
+		$dupesql = "SELECT 
+                    COUNT(*) 
+                FROM 
+                    $table 
+                WHERE 
+                    (   
+                        FirstName = '$this->FirstName' 
+                        AND LastName = '$this->LastName'
+                    )";
+    	return mysqli_query($link, $dupesql);
+	}
+
   	public function save() {
+  		// make variables from included mysql.php accessible to this function
   		global $link;
  		global $table;
-  		// putting data into variables
-  		$FirstName = $this->FirstName;
-  		$LastName = $this->LastName;
-  		$Age = $this->Age;
-  		$Sex = $this->Sex;
 
   		// Escape strings
-  		$FirstName = mysqli_real_escape_string($link, $FirstName);
-  		$LastName = mysqli_real_escape_string($link, $LastName);
-  		$Age = mysqli_real_escape_string($link, $Age);
-  		$Sex = mysqli_real_escape_string($link, $Sex);
+  		$FirstName = mysqli_real_escape_string($link, $this->FirstName);
+  		$LastName = mysqli_real_escape_string($link, $this->LastName);
+  		$Age = mysqli_real_escape_string($link, $this->Age);
+  		$Sex = mysqli_real_escape_string($link, $this->Sex);
 
-  		// Insert into table
-		$sqlquery = "INSERT INTO $table
-		(FirstName,LastName,Age,Sex) VALUES('$FirstName','$LastName','$Age','Sex')";
-
-		$results = mysqli_query($link, $sqlquery);
+  		// Insert into table only if not duplicate
+  		If (self::dupecheck() > 0) {
+			$sqlquery = "INSERT INTO $table
+			(FirstName,LastName,Age,Sex) VALUES('$FirstName','$LastName','$Age','Sex')";
+			$results = mysqli_query($link, $sqlquery);
+		} else {
+			echo "Sorry, that name is already in our database.<br />";
+		}
 	}
 }
 
