@@ -1,0 +1,41 @@
+Nice job! The next step is to make it so that it checks for duplicates before saving. If there's already someone in there with the same first, last, age, and sex, it should return false. Which leads me to...
+
+You should almost always have functions return something. In this case, you'd want it to return true or false. For more advanced programs you can return a lot of status information, but for something simple like this, you can use the return like this:
+
+if ($traveler->save()) {
+    echo "You were successfully saved in the database.";
+} else {
+    echo "You were already in the database.";
+}
+
+Also... you never want to connect to mysql within a function. Generally here's how a program should flow:
+
+
+<?php
+connect to database
+
+some class
+
+some function
+
+do stuff
+more stuff
+
+close database // you can pretty safely leave this out, as mysql connections are always closed when a script stops running
+?>
+
+But... even that wouldn't work if you have even a semi-complicated program, because you don't want to rewrite all that mysql stuff at the top of every page. So... you make a php file that does nothing but connect to mysql, and require it at the top of every page.
+
+So... next assignment:
+
+1. The first line of your program should be require_once('mysql.php');  (bonus points-- explain to me why include() or require() might not be good choices)
+2. Create that mysql.php and delete the connection stuff from the ->save() method
+3. Make a separate method that checks for duplicates (bonus points-- explain to me why we don't just put it in the save() method)
+4. Integrate the duplicate checker into save
+
+Sounds like a lot, but some of these steps should be pretty easy.
+
+* look up require_once, include and require
+* look up how to check for duplicates in mysql
+
+1. include() wouldn't work as well because if it weren't included for some reason, the program wouldn't work ... so require makes more sense. But you don't want to accidentally include it twice, because you don't want to try to connect to mysql twice. So you use require_once(). Right?
