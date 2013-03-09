@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL); 
+require_once 'mysql.php';
 
 class Trip {
     public $place;
@@ -56,21 +56,7 @@ class Traveler {
   		$Age = $this->Age;
   		$Sex = $this->Sex;
 
-  		// Database info and connection
-  		$DBhost = "localhost";
-		$DBuser = "root";
-		$DBpass = "root";
-		$DBName = "root_trips";
-		$table = "travelers";
-		$link = mysqli_connect($DBhost, $DBuser, $DBpass, $DBName);
-
-		if (!$link) {
-    		die('Connect Error (' . mysqli_connect_errno() . ') '
-            . mysqli_connect_error());
-		}
-		echo 'Success... ' . mysqli_get_host_info($link) . "<br />";
-
-  		// Escape strings (fixed)
+  		// Escape strings
   		$FirstName = mysqli_real_escape_string($link, $FirstName);
   		$LastName = mysqli_real_escape_string($link, $LastName);
   		$Age = mysqli_real_escape_string($link, $Age);
@@ -81,9 +67,6 @@ class Traveler {
 		(FirstName,LastName,Age,Sex) VALUES('$FirstName','$LastName','$Age','Sex')";
 
 		$results = mysqli_query($link, $sqlquery);
-
-  		// Close connection
-		mysqli_close($link);
 	}
 }
 
