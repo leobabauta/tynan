@@ -42,6 +42,7 @@ class Traveler {
 	public $Age;
 	public $Sex;
 
+
 	public function __construct($FirstName, $LastName, $Age, $Sex) {
   		$this->FirstName = $FirstName;
   		$this->LastName = $LastName;
@@ -50,6 +51,8 @@ class Traveler {
  	}
  
   	public function save() {
+  		global $link;
+ 		global $table;
   		// putting data into variables
   		$FirstName = $this->FirstName;
   		$LastName = $this->LastName;
