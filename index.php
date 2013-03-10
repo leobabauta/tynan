@@ -63,7 +63,7 @@ class Traveler {
   		$Sex = mysqli_real_escape_string($link, $this->Sex);
 
   		// Insert into table only if not duplicate
-  		If ($this->dupecheck() < 1) {
+  		If (!$this->dupeCheck()) {
 			$sqlquery = "INSERT INTO $table
 			(FirstName,LastName,Age,Sex) VALUES('$FirstName','$LastName','$Age','$Sex')";
 			$results = mysqli_query($link, $sqlquery);
@@ -73,16 +73,20 @@ class Traveler {
 		}
 	}
 
-	 	public function dupecheck() {
+	 	public function dupeCheck() {
 		// checks to see if there's already a record with same first & last name
 		global $link;
 
-		$dupesql = "SELECT * FROM $this->table WHERE FirstName = '$this->FirstName'AND LastName = '$this->LastName'";
+		$dupeSql = "SELECT * FROM $this->table WHERE FirstName = '$this->FirstName'AND LastName = '$this->LastName'";
 
-        $result = mysqli_query($link, $dupesql);
-        $dupecount = mysqli_num_rows($result);
+        $result = mysqli_query($link, $dupeSql);
+        $dupeCount = mysqli_num_rows($result);
 
-    	return $dupecount;
+        if ($dupeCount > 0) {
+        	return true;
+        } else {
+        	return false;
+        }
 	}
 }
 
@@ -101,7 +105,7 @@ $trip1->display();
 $trip1->addTraveler("Justin");
 $trip1->display();
 
-$leo = new Traveler("Seth", "Babauta", "15", "M");
+$leo = new Traveler("Noelle", "Babauta", "6", "F");
 $leo->save();
 
 ?>
