@@ -4,7 +4,6 @@
 	$DBuser = "root";
 	$DBpass = "root";
 	$DBName = "root_trips";
-	$table = "travelers";
 	$link = mysqli_connect($DBhost, $DBuser, $DBpass, $DBName);
 
 	if (!$link) {

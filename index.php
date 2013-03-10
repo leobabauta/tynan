@@ -41,6 +41,7 @@ class Traveler {
 	public $LastName;
 	public $Age;
 	public $Sex;
+	public $table = "travelers";
 
 
 	public function __construct($FirstName, $LastName, $Age, $Sex) {
@@ -52,25 +53,25 @@ class Traveler {
  
  	public function dupecheck() {
 		// checks to see if there's already a record with same first & last name
-		global $table;
 		global $link;
 
-		$dupesql = "SELECT 
-                    COUNT(*) 
-                FROM 
-                    $table 
-                WHERE 
-                    (   
-                        FirstName = '$this->FirstName' 
-                        AND LastName = '$this->LastName'
-                    )";
-    	return mysql_query($dupesql);
+		$dupesql = "SELECT COUNT(*) 
+                FROM $this->table 
+                WHERE FirstName = '$this->FirstName'
+            ";
+
+        $dupe = mysql_query($dupesql);
+
+		// test dupe function
+  		echo "dupe equals " . $dupe . "<br />";
+
+    	return $dupe;
 	}
 
   	public function save() {
   		// make variables from included mysql.php accessible to this function
   		global $link;
- 		global $table;
+		$table = "travelers";
 
   		// Escape strings
   		$FirstName = mysqli_real_escape_string($link, $this->FirstName);
@@ -79,7 +80,7 @@ class Traveler {
   		$Sex = mysqli_real_escape_string($link, $this->Sex);
 
   		// Insert into table only if not duplicate
-  		If (self::dupecheck() > 0) {
+  		If ($this->dupecheck() > 0) {
 			$sqlquery = "INSERT INTO $table
 			(FirstName,LastName,Age,Sex) VALUES('$FirstName','$LastName','$Age','Sex')";
 			$results = mysqli_query($link, $sqlquery);
@@ -90,7 +91,7 @@ class Traveler {
 	}
 }
 
-$trip1 = new Trip("Japan", 10);
+$trip1 = new Trip("Guam", 9);
 $trip1->display();
 
 $trip1->addTraveler("Leo");
@@ -99,10 +100,13 @@ $trip1->display();
 $trip1->addTraveler("Eva");
 $trip1->display();
 
-$trip1->addTraveler("Tynan");
+$trip1->addTraveler("Rain");
 $trip1->display();
 
-$leo = new Traveler("Eva", "Babauta", "65", "M");
+$trip1->addTraveler("Justin");
+$trip1->display();
+
+$leo = new Traveler("Leo", "Babauta", "65", "M");
 $leo->save();
 
 ?>
