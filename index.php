@@ -64,7 +64,7 @@ class Traveler {
                         FirstName = '$this->FirstName' 
                         AND LastName = '$this->LastName'
                     )";
-    	return mysqli_query($link, $dupesql);
+    	return mysql_query($dupesql);
 	}
 
   	public function save() {
@@ -83,6 +83,7 @@ class Traveler {
 			$sqlquery = "INSERT INTO $table
 			(FirstName,LastName,Age,Sex) VALUES('$FirstName','$LastName','$Age','Sex')";
 			$results = mysqli_query($link, $sqlquery);
+			echo "Success ... added " . $FirstName . " " . $LastName . " to database. </br />";
 		} else {
 			echo "Sorry, that name is already in our database.<br />";
 		}
@@ -101,7 +102,7 @@ $trip1->display();
 $trip1->addTraveler("Tynan");
 $trip1->display();
 
-$leo = new Traveler("Leo", "Babauta", "65", "M");
+$leo = new Traveler("Eva", "Babauta", "65", "M");
 $leo->save();
 
 ?>
