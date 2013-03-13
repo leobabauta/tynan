@@ -1,39 +1,6 @@
 <?php
 require_once 'mysql.php';
 
-class Trip {
-    public $place;
-    public $days;
- 	public $travelers = Array();
-
-	public function __construct($place, $days) {
-  		$this->place = $place;
-  		$this->days = $days;
-  	}
-
-   	public function addTraveler($newTraveler) {
-		$this->travelers[] = $newTraveler;
-  	}
-
-  	public function display() {
-  		$travelerString ="";
-  		$travelerCount = count($this->travelers);
-  		if ($travelerCount === 0) {
-			$travelerString = "no one";
-		}
-		foreach ($this->travelers as $key => $value) {
-			if ($key < 1) {
-				$travelerString = $travelerString . $value;
-			} elseif ($key > 0 && $key === $travelerCount-1) {
-				$travelerString = $travelerString . " and " . $value;
-			} else {
-				$travelerString = $travelerString . ", " . $value;
-			}
-		}
-		echo $this->days . " day trip to " . $this->place . " with " . $travelerString . ".<br />";
-	}
-}
-
 class Traveler {
 	// Properties of a traveler
 	// Note: UserID isn't necessary as it's auto-incremented
@@ -42,18 +9,19 @@ class Traveler {
 	public $Age;
 	public $Sex;
 	public $table = "travelers";
+	public $resultFirst;
+	public $resultLast;
+	public $resultAge;
+	public $resultSex;
 
-
-	public function __construct($FirstName, $LastName, $Age, $Sex) {
+	public function __construct($FirstName, $LastName) {
   		$this->FirstName = $FirstName;
   		$this->LastName = $LastName;
-  		$this->Age = $Age;
-  		$this->Sex = $Sex;
  	}
 
   	public function save() {
-  		// make variables from included mysql.php accessible to this function
   		global $link;
+  		// make variables from included mysql.php accessible to this function
 		$table = "travelers";
 
   		// Escape strings
@@ -64,7 +32,7 @@ class Traveler {
 
   		// Insert into table only if not duplicate
   		If (!$this->dupeCheck()) {
-			$sqlquery = "INSERT INTO $table
+			$sqlquery = "INSERT INTO $this->table
 			(FirstName,LastName,Age,Sex) VALUES('$FirstName','$LastName','$Age','$Sex')";
 			$results = mysqli_query($link, $sqlquery);
 			echo "Success ... added " . $FirstName . " " . $LastName . " to database. </br />";
@@ -73,10 +41,11 @@ class Traveler {
 		}
 	}
 
-	 	public function dupeCheck() {
-		// checks to see if there's already a record with same first & last name
+	public function dupeCheck() {
 		global $link;
+		$table = "travelers";
 
+		// checks to see if there's already a record with same first & last name
 		$dupeSql = "SELECT * FROM $this->table WHERE FirstName = '$this->FirstName'AND LastName = '$this->LastName'";
 
         $result = mysqli_query($link, $dupeSql);
@@ -88,24 +57,34 @@ class Traveler {
         	return false;
         }
 	}
+
+	public function load() {
+		// function looks up name in traveler database, loads data into variable
+		global $link;
+
+		// first looks up the row that has a first and last name match
+		$result = mysqli_query($link,"SELECT * FROM $this->table WHERE FirstName = '$this->FirstName'AND LastName = '$this->LastName'");
+
+		// next puts the result of the query into an array, then into individual variables
+		$resultArray = mysqli_fetch_array($result);
+		$this->resultFirst = $resultArray['FirstName'];
+		$this->resultLast = $resultArray['LastName'];
+		$this->resultAge = $resultArray['Age'];
+		$this->resultSex= $resultArray['Sex'];
+	}
+
+ 	public function __toString() {
+        return $this->resultFirst . " " . $this->resultLast . ", Age " . $this->resultAge . ", " . $this->resultSex . "<br />";
+    }
+
 }
 
-$trip1 = new Trip("Guam", 9);
-$trip1->display();
+$traveler1 = new Traveler("Leo","Babauta","95","M");
+$traveler1->save();
 
-$trip1->addTraveler("Leo");
-$trip1->display();
+$traveler2 = new Traveler("Leo","Babauta");
+$traveler2->load();
 
-$trip1->addTraveler("Eva");
-$trip1->display();
-
-$trip1->addTraveler("Rain");
-$trip1->display();
-
-$trip1->addTraveler("Justin");
-$trip1->display();
-
-$leo = new Traveler("Noelle", "Babauta", "6", "F");
-$leo->save();
+echo $traveler2;
 
 ?>
