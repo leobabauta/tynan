@@ -9,12 +9,16 @@ class Traveler {
 	public $Age;
 	public $Sex;
 	public $table = "travelers";
+	// these are used in load and toString fuctions
 	public $resultFirst;
 	public $resultLast;
 	public $resultAge;
 	public $resultSex;
 
 	public function __construct($FirstName, $LastName) {
+	// ??need to figure out how to have construct parameters depend on what parameters are passed to the class??
+	// right now I've removed Age and Sex because they're not passed when Traveler2 is instantiated
+	// ??maybe use an array as parameter, then foreach loop to assign passed parameters to variables?
   		$this->FirstName = $FirstName;
   		$this->LastName = $LastName;
  	}
