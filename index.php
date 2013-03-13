@@ -14,14 +14,43 @@ class Traveler {
 	public $resultLast;
 	public $resultAge;
 	public $resultSex;
+	public $fullSex;
 
-	public function __construct($FirstName, $LastName) {
-	// ??need to figure out how to have construct parameters depend on what parameters are passed to the class??
-	// right now I've removed Age and Sex because they're not passed when Traveler2 is instantiated
-	// ??maybe use an array as parameter, then foreach loop to assign passed parameters to variables?
-  		$this->FirstName = $FirstName;
-  		$this->LastName = $LastName;
- 	}
+	// uses a series of constructs depending on how many parameters are passed to Traveler class
+	// this first one decides how many parameters there are, and calls the appropriate subconstruct
+ 	public function __construct() { 
+        $a = func_get_args(); 
+        $i = func_num_args(); 
+        if (method_exists($this,$f='__construct'.$i)) { 
+            call_user_func_array(array($this,$f),$a); 
+        } 
+    } 
+    
+    public function __construct1($a1) { 
+    	// for if there is just one parameter
+  		$this->FirstName = $a1;
+    } 
+    
+    public function __construct2($a1,$a2) { 
+    	// for if there are 2 parameters
+  		$this->FirstName = $a1;
+  		$this->LastName = $a2;
+    } 
+    
+    public function __construct3($a1,$a2,$a3) { 
+    	// for if there are 3 parameters
+  		$this->FirstName = $a1;
+  		$this->LasttName = $a2;
+  		$this->Age = $a3;
+  	} 
+    
+    public function __construct4($a1,$a2,$a3, $a4) { 
+    	// for if there are 4 parameters
+  		$this->FirstName = $a1;
+  		$this->LastName = $a2;
+  		$this->Age = $a3;
+  		$this->Sex = $a4;
+    } 
 
   	public function save() {
   		global $link;
@@ -75,26 +104,26 @@ class Traveler {
 		$this->resultLast = $resultArray['LastName'];
 		$this->resultAge = $resultArray['Age'];
 		$this->resultSex = $resultArray['Sex'];
+
+		// change sex to full word
+		if ($this->resultSex == 'M') {
+			$this->fullSex = 'Male';
+		} elseif ($this->resultSex == 'F') {
+			$this->fullSex = 'Female';
+		}
 	}
 
  	public function __toString() {
-		// first change sex to full word
-		if ($this->resultSex = "M") {
-			$fullSex = "Male";
-		} elseif ($this->resultSex = "F") {
-			$fullSex = "Female";
-		}
-
 		// then create string to return when class is echoed as a string
-        return $this->resultFirst . " " . $this->resultLast . ", Age " . $this->resultAge . ", " . $fullSex . "<br />";
+        return $this->resultFirst . " " . $this->resultLast . ", Age " . $this->resultAge . ", " . $this->fullSex . "<br />";
     }
 
 }
 
-$traveler1 = new Traveler("Leo","Babauta","95","M");
+$traveler1 = new Traveler("Maia","Cruz","13","F");
 $traveler1->save();
 
-$traveler2 = new Traveler("Leo","Babauta");
+$traveler2 = new Traveler("Maia","Cruz");
 $traveler2->load();
 
 echo $traveler2;
