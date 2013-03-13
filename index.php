@@ -70,11 +70,19 @@ class Traveler {
 		$this->resultFirst = $resultArray['FirstName'];
 		$this->resultLast = $resultArray['LastName'];
 		$this->resultAge = $resultArray['Age'];
-		$this->resultSex= $resultArray['Sex'];
+		$this->resultSex = $resultArray['Sex'];
 	}
 
  	public function __toString() {
-        return $this->resultFirst . " " . $this->resultLast . ", Age " . $this->resultAge . ", " . $this->resultSex . "<br />";
+		// first change sex to full word
+		if ($this->resultSex = "M") {
+			$fullSex = "Male";
+		} elseif ($this->resultSex = "F") {
+			$fullSex = "Female";
+		}
+
+		// then create string to return when class is echoed as a string
+        return $this->resultFirst . " " . $this->resultLast . ", Age " . $this->resultAge . ", " . $fullSex . "<br />";
     }
 
 }
