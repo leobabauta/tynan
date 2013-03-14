@@ -11,12 +11,31 @@ class Traveler {
 	public $table = "travelers";
 
 	// puts parameters into an array, then assigns values to variables from array
- 	public function __construct($params = Array()) {
-        $this->FirstName = isset($params['FirstName']) ? $params['FirstName'] : null;
-        $this->LastName = isset($params['LastName']) ? $params['LastName'] : null;
-        $this->Age = isset($params['Age']) ? $params['Age'] : null;
-        $this->Sex = isset($params['Sex']) ? $params['Sex'] : null;
-    }
+ 	public function __construct() {
+    	$numargs = func_num_args();
+
+		switch ($numargs) {
+			case 1:
+    			$this->FirstName = func_get_arg(0);
+    		break;
+			case 2:
+    			$this->FirstName = func_get_arg(0);
+   	        	$this->LastName = func_get_arg(1);
+  			break;
+			case 3:
+			    $this->FirstName = func_get_arg(0);
+   	        	$this->LastName = func_get_arg(1);
+        		$this->Age = func_get_arg(2);
+  			break;
+			case 4:
+    			$this->FirstName = func_get_arg(0);
+   	        	$this->LastName = func_get_arg(1);
+        		$this->Age = func_get_arg(2);
+        		$this->Sex = func_get_arg(3);
+  			break;			default:
+  				echo "Nothing set";
+		}
+   	}  
 
   	public function save() {
   		global $link;
@@ -73,9 +92,6 @@ class Traveler {
 	}
 
  	public function __toString() {
-		// test this->sex variable
- 		echo "this->sex variable is " . $this->Sex . "<br />";
-
 		// change sex to full word
 		if ($this->Sex == 'M') {
 			$fullSex = 'Male';

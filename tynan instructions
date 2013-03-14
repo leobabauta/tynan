@@ -14,3 +14,12 @@ echo $user2;
 Output should be:
 
 "Leo Babauta, Age 95, Male";
+
+
+
+
+        $this->FirstName = isset($params['FirstName']) ? $params['FirstName'] : null;
+        echo "testing firstname: " . $this->FirstName . "<br />";
+        $this->LastName = isset($params['LastName']) ? $params['LastName'] : null;
+        $this->Age = isset($params['Age']) ? $params['Age'] : null;
+        $this->Sex = isset($params['Sex']) ? $params['Sex'] : null;
