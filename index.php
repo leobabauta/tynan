@@ -10,7 +10,6 @@ class Traveler {
 	public $sex;
 	public $table = "travelers";
 
-	// puts parameters into an array, then assigns values to variables from array
     public function __construct($first, $last, $age = null, $sex = null) {
       $this->firstName = $first;
       $this->lastName = $last;
