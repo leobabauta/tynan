@@ -9,29 +9,29 @@ class Traveler {
 	public $age;
 	public $sex;
 
-    public function __construct($first, $last, $age = null, $sex = null) {
-      $this->firstName = $first;
-      $this->lastName = $last;
-      if (isset($age)) {
-        $this->age = $age;
-      }
-      if (isset($sex)) {
-        $this->sex = $sex;
-      }
-    }
+	public function __construct($first, $last, $age = null, $sex = null) {
+		$this->firstName = $first;
+		$this->lastName = $last;
+		if (isset($age)) {
+			$this->age = $age;
+		}
+		if (isset($sex)) {
+			$this->sex = $sex;
+		}
+	}
 
-  	public function save() {
-  		global $link;
-  		// make variables from included mysql.php accessible to this function
+	public function save() {
+		global $link;
+		// make variables from included mysql.php accessible to this function
 
-  		// Escape strings
-  		$firstName = mysqli_real_escape_string($link, $this->firstName);
-  		$lastName = mysqli_real_escape_string($link, $this->lastName);
-  		$age = mysqli_real_escape_string($link, $this->age);
-  		$sex = mysqli_real_escape_string($link, $this->sex);
+		// Escape strings
+		$firstName = mysqli_real_escape_string($link, $this->firstName);
+		$lastName = mysqli_real_escape_string($link, $this->lastName);
+		$age = mysqli_real_escape_string($link, $this->age);
+		$sex = mysqli_real_escape_string($link, $this->sex);
 
-  		// Insert into table only if not duplicate
-  		If (!$this->dupeCheck()) {
+		// Insert into table only if not duplicate
+		If (!$this->dupeCheck()) {
 			$sqlquery = "INSERT INTO travelers
 			(FirstName,LastName,Age,Sex) VALUES('"
 				. $firstName . "','"
@@ -53,14 +53,14 @@ class Traveler {
 		. $this->firstName . "'
 		AND lastName = '" . $this->lastName . "'";
 
-        $result = mysqli_query($link, $dupeSql);
-        $dupeCount = mysqli_num_rows($result);
+		$result = mysqli_query($link, $dupeSql);
+		$dupeCount = mysqli_num_rows($result);
 
-        if ($dupeCount > 0) {
-        	return true;
-        } else {
-        	return false;
-        }
+		if ($dupeCount > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public function load() {
@@ -69,9 +69,9 @@ class Traveler {
 
 		// first looks up the row that has a first and last name match
 		$result = mysqli_query($link,"SELECT * FROM travelers 
-		WHERE FirstName = '"
-		 . $this->firstName . "'
- 		AND LastName = '" . $this->lastName . "'");
+			WHERE FirstName = '"
+			. $this->firstName . "'
+			AND LastName = '" . $this->lastName . "'");
 
 		// next puts the result of the query into an array, then into individual variables
 		$resultArray = mysqli_fetch_array($result);
@@ -81,7 +81,7 @@ class Traveler {
 		$this->sex = $resultArray['Sex'];
 	}
 
- 	public function __toString() {
+	public function __toString() {
 		// change sex to full word
 		if ($this->sex == 'M') {
 			$fullSex = 'Male';
@@ -90,8 +90,8 @@ class Traveler {
 		}
 
 		// then create string to return when class is echoed as a string
-        return $this->firstName . " " . $this->lastName . ", age " . $this->age . ", " . $fullSex . "<br />";
-    }
+		return $this->firstName . " " . $this->lastName . ", age " . $this->age . ", " . $fullSex . "<br />";
+	}
 
 }
 
@@ -103,28 +103,28 @@ class Trip {
 	public $startDate;
 	public $endDate;
 
-    public function __construct($departureCity, $destinationCity, $startDate = null, $endDate = null) {
-    	$this->departureCity = $departureCity;
-    	$this->destinationCity = $destinationCity;
-      if (isset($startDate)) {
-        $this->startDate = $startDate;
-      }
-      if (isset($endDate)) {
-        $this->endDate = $endDate;
-      }
-    }
+	public function __construct($departureCity, $destinationCity, $startDate = null, $endDate = null) {
+		$this->departureCity = $departureCity;
+		$this->destinationCity = $destinationCity;
+		if (isset($startDate)) {
+			$this->startDate = $startDate;
+		}
+		if (isset($endDate)) {
+			$this->endDate = $endDate;
+		}
+	}
 
-  	public function save() {
-  		global $link;
+	public function save() {
+		global $link;
 
-  		// Escape strings
-  		$departureCity = mysqli_real_escape_string($link, $this->departureCity);
-  		$destinationCity = mysqli_real_escape_string($link, $this->destinationCity);
-  		$startDate = mysqli_real_escape_string($link, $this->startDate);
-  		$endDate = mysqli_real_escape_string($link, $this->endDate);
+		// Escape strings
+		$departureCity = mysqli_real_escape_string($link, $this->departureCity);
+		$destinationCity = mysqli_real_escape_string($link, $this->destinationCity);
+		$startDate = mysqli_real_escape_string($link, $this->startDate);
+		$endDate = mysqli_real_escape_string($link, $this->endDate);
 
-  		// Insert into table only if not duplicate
-  		If (!$this->dupeCheck()) {
+		// Insert into table only if not duplicate
+		If (!$this->dupeCheck()) {
 			$sqlquery = "INSERT INTO trips
 			(DepartureCity,DestinationCity,StartDate,EndDate) VALUES('"
 				. $departureCity . "','"
@@ -145,15 +145,15 @@ class Trip {
 		. $this->departureCity . "'
 		AND DestinationCity = '" . $this->destinationCity . "'";
 
-        $result = mysqli_query($link, $dupeSql);
-        $dupeCount = mysqli_num_rows($result);
+		$result = mysqli_query($link, $dupeSql);
+		$dupeCount = mysqli_num_rows($result);
 
-        if ($dupeCount > 0) {
-        	return true;
-        } else {
-        	return false;
-       	}
-    }
+		if ($dupeCount > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public function load() {
 		// function looks up name in trip database, loads data into variables
@@ -162,8 +162,8 @@ class Trip {
 		// first looks up the row that has a match between departureCity and destinationCity
 		$result = mysqli_query($link,"SELECT * FROM trips 
 		WHERE DepartureCity = '"
-		 . $this->departureCity . "'
- 		AND DestinationCity = '" . $this->destinationCity . "'");
+			. $this->departureCity . "'
+			AND DestinationCity = '" . $this->destinationCity . "'");
 
 		// next puts the result of the query into an array, then into individual variables
 		$resultArray = mysqli_fetch_array($result);
@@ -173,10 +173,10 @@ class Trip {
 		$this->endDate = $resultArray['EndDate'];
 	}
 
- 	public function __toString() {
+	public function __toString() {
 		// then create string to return when class is echoed as a string
-        return "Trip data: " . $this->departureCity . " to " . $this->destinationCity . " from " . $this->startDate . " to " . $this->endDate . "<br />";
-    }
+		return "Trip data: " . $this->departureCity . " to " . $this->destinationCity . " from " . $this->startDate . " to " . $this->endDate . "<br />";
+	}
 
 }
 
