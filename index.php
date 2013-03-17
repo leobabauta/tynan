@@ -222,7 +222,10 @@ class Trip {
 }
 
 $japanTrip = new Trip("San Francisco","Tokyo","2013-03-26","2013-04-07");
+$japanTrip->save();
 $leo = new Traveler("Hiyao", "Miyazaki", "80", "M");
+$leo->save();
+
 
 echo $japanTrip;
 echo $leo;
