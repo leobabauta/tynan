@@ -1,25 +1,5 @@
+1. Create a new directory in the htdocs folder and call it 'trips'. Create a new git repo there. Now you can go to http://localhost/trips/  to access it, and the whole directory will be put in github.
 
-Next assignment: make a ->load() function. And a __toString() [http://php.net/manual/en/language.oop5.magic.php for more info on toString].
+2. Create a trips class that corresponds with the trips table you made in the database. It should also have __construct save and load methods. You should be able to do a lot of copy/pasting/editing to make this happen.
 
-When you're done, this should work:
-
-$user1 = new User("Leo","Babauta","95",M");
-$user1->save();
-
-$user2 = new User("Leo","Babauta");
-$user2->load();
-
-echo $user2;
-
-Output should be:
-
-"Leo Babauta, Age 95, Male";
-
-
-
-
-        $this->FirstName = isset($params['FirstName']) ? $params['FirstName'] : null;
-        echo "testing firstname: " . $this->FirstName . "<br />";
-        $this->LastName = isset($params['LastName']) ? $params['LastName'] : null;
-        $this->Age = isset($params['Age']) ? $params['Age'] : null;
-        $this->Sex = isset($params['Sex']) ? $params['Sex'] : null;
+Ganbatte!
