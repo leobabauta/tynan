@@ -174,25 +174,59 @@ class Trip {
 	}
 
 	public function __toString() {
-		// then create string to return when class is echoed as a string
+		// create string to return when class is echoed as a string
 		return "Trip data: " . $this->departureCity . " to " . $this->destinationCity . " from " . $this->startDate . " to " . $this->endDate . "<br />";
 	}
 
+	public function addTraveler($addedTraveler) {
+		// to associate traveler with current trip, adds traveler to addTraveler table
+		global $link;
+
+		// Escape strings - put traveler and trip data into variables
+		$firstName = mysqli_real_escape_string($link, $addedTraveler->firstName);
+		$lastName = mysqli_real_escape_string($link, $addedTraveler->lastName);
+		$departureCity = mysqli_real_escape_string($link, $this->departureCity);
+		$destinationCity = mysqli_real_escape_string($link, $this->destinationCity);
+
+		// look up traveler ID from traveler table
+		$result = mysqli_query($link,"SELECT * FROM travelers 
+		WHERE FirstName = '"
+			. $firstName . "'
+			AND LastName = '" . $lastName . "'");
+
+		// put traveler's UserId into travelerID variable
+		$resultArray = mysqli_fetch_array($result);
+		$travelerID = $resultArray['UserId'];
+
+		// look up trip ID from trip table
+		$result = mysqli_query($link,"SELECT * FROM trips 
+		WHERE DepartureCity = '"
+			. $departureCity . "'
+			AND DestinationCity = '" . $destinationCity . "'");
+
+		// put trip's TripID into tripID variable
+		$resultArray = mysqli_fetch_array($result);
+		$tripID = $resultArray['TripId'];
+
+		// Insert all data into traveler_trip table
+		$sqlquery = "INSERT INTO traveler_trip
+			(tripID,DepartureCity,DestinationCity,travelerID,FirstName,LastName) VALUES('"
+				. $tripID . "','"
+				. $departureCity . "','"
+				. $destinationCity . "','"
+				. $travelerID . "','"
+				. $firstName . "','"
+				. $lastName . "')";			$results = mysqli_query($link, $sqlquery);
+		echo "Success ... added " . $firstName . " " . $lastName . " to the trip from " . $departureCity . " to " . $destinationCity . " in our database. </br />";
+	}
 }
 
-$traveler1 = new Traveler("Miyasaki","San","69","M");
-$traveler1->save();
+$japanTrip = new Trip("San Francisco","Tokyo","2013-03-26","2013-04-07");
+$leo = new Traveler("Hiyao", "Miyazaki", "80", "M");
 
-$traveler2 = new Traveler("Miyasaki","San");
-$traveler2->load();
+echo $japanTrip;
+echo $leo;
 
-echo $traveler2;
+$japanTrip->addTraveler($leo);
 
-$trip1 = new Trip("San Francisco","Tokyo","2013-03-26","2013-04-07");
-$trip1->save();
-
-$trip2 = new Trip("San Francisco","Tokyo");
-$trip2->load();
-
-echo $trip2;
 ?>
