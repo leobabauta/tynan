@@ -208,15 +208,11 @@ class Trip {
 		$resultArray = mysqli_fetch_array($result);
 		$tripID = $resultArray['TripId'];
 
-		// Insert all data into traveler_trip table
+		// Insert trip and traveler IDs into traveler_trip table
 		$sqlquery = "INSERT INTO traveler_trip
-			(tripID,DepartureCity,DestinationCity,travelerID,FirstName,LastName) VALUES('"
+			(tripID,travelerID) VALUES('"
 				. $tripID . "','"
-				. $departureCity . "','"
-				. $destinationCity . "','"
-				. $travelerID . "','"
-				. $firstName . "','"
-				. $lastName . "')";			$results = mysqli_query($link, $sqlquery);
+				. $travelerID . "')";			$results = mysqli_query($link, $sqlquery);
 		echo "Success ... added " . $firstName . " " . $lastName . " to the trip from " . $departureCity . " to " . $destinationCity . " in our database. </br />";
 	}
 }
@@ -225,7 +221,6 @@ $japanTrip = new Trip("San Francisco","Tokyo","2013-03-26","2013-04-07");
 $japanTrip->save();
 $leo = new Traveler("Hiyao", "Miyazaki", "80", "M");
 $leo->save();
-
 
 echo $japanTrip;
 echo $leo;
