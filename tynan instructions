@@ -1,12 +1,9 @@
-Next assignment:
+Last assignment with this traveler stuff:
 
-1. Clean up all the indenting in your code. If it's okay on your computer, never mind, but it looks sloppy on github.
+1. Create $trip->showSummary(). It should give details about the trip and include details on everyone who's going on the trip. So something like:
 
-2. Make a new table called traveler_trip. The purpose of this table is to assign users to trips. Try to figure out the best data structure for it, but if you're spending too long on it, just ask me. Not worth wasting a bunch of time.
+Japan trip from 3/26 - 4/4 with travelers:
+Hayao Miyazaki, male, age 65
+Tynan Smith, male, age 31
 
-3. Make a function called addTraveler on the Trip class that uses that table to associate a traveler with a trip. So you should be able to do something like:
-
-$japanTrip = new Trip(blah blah;
-$leo = new Traveler(blah blah);
-
-$japanTrip->addTraveler($leo);
+2. Just for fun, make it also report the average age of the travelers.

@@ -215,6 +215,48 @@ class Trip {
 				. $travelerID . "')";			$results = mysqli_query($link, $sqlquery);
 		echo "Success ... added " . $firstName . " " . $lastName . " to the trip from " . $departureCity . " to " . $destinationCity . " in our database. </br />";
 	}
+
+	public function showSummary() {
+		// function displays relevant info about a trip, including trip dates, traveler info, and average age
+		global $link;
+
+		// Escape strings - put trip data into variables
+		$departureCity = mysqli_real_escape_string($link, $this->departureCity);
+		$destinationCity = mysqli_real_escape_string($link, $this->destinationCity);
+
+		// look up trip info from trip table
+		$result = mysqli_query($link,"SELECT * FROM trips 
+		WHERE DepartureCity = '"
+			. $departureCity . "'
+			AND DestinationCity = '" . $destinationCity . "'");
+
+		// put trip's TripID and dates variables
+		$resultArray = mysqli_fetch_array($result);
+		$tripID = $resultArray['TripId'];
+		$startDate = $resultArray['StartDate'];
+		$endDate = $resultArray['EndDate'];
+
+		// look up associated travelers from traveler_trip table
+		$result = mysqli_query($link,"SELECT travelerID FROM traveler_trip 
+		WHERE tripID = '"
+			. $tripID . "'");
+
+		// put travelerIDs into variables
+		// NOTE: NEED TO FIGURE OUT HOW TO PUT MULTIPLE TRIPS INTO MULTIPLE VARIABLES
+		$resultArray = mysqli_fetch_array($result);
+		$travelerID = $resultArray['travelerID'];
+
+		while ($row = mysql_fetch_assoc($result)) {
+			$travlerIDs[] = $row['id'];
+		}
+
+		echo $destinationCity . " trip from " . $startDate . " - " . $endDate . " with travelers:<br />";
+		echo $firstName . " " . $lastName . ", " . $fullSex . ", age " . $age . "<br />";
+
+Japan trip from 3/26 - 4/4 with travelers:
+Hayao Miyazaki, male, age 65
+Tynan Smith, male, age 31
+	}
 }
 
 $japanTrip = new Trip("San Francisco","Tokyo","2013-03-26","2013-04-07");
