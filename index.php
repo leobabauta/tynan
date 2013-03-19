@@ -174,8 +174,14 @@ class Trip {
 	}
 
 	public function __toString() {
+		// convert date format
+		$old_date_timestamp = strtotime($this->startDate);
+		$newStartDate = date('m/d', $old_date_timestamp);
+		$old_date_timestamp2 = strtotime($this->endDate);
+		$newEndDate = date('m/d', $old_date_timestamp2);
+
 		// create string to return when class is echoed as a string
-		return "Trip data: " . $this->departureCity . " to " . $this->destinationCity . " from " . $this->startDate . " to " . $this->endDate . "<br />";
+		return "Trip data: " . $this->departureCity . " to " . $this->destinationCity . " from " . $newStartDate . " to " . $newEndDate . "<br />";
 	}
 
 	public function addTraveler($addedTraveler) {
@@ -243,19 +249,20 @@ class Trip {
 
 		// put travelerIDs into variables
 		// NOTE: NEED TO FIGURE OUT HOW TO PUT MULTIPLE TRIPS INTO MULTIPLE VARIABLES
-		$resultArray = mysqli_fetch_array($result);
-		$travelerID = $resultArray['travelerID'];
-
 		while ($row = mysql_fetch_assoc($result)) {
 			$travlerIDs[] = $row['id'];
+			echo $travelerIDs['id'];
 		}
 
-		echo $destinationCity . " trip from " . $startDate . " - " . $endDate . " with travelers:<br />";
-		echo $firstName . " " . $lastName . ", " . $fullSex . ", age " . $age . "<br />";
+		// convert date format
+		$old_date_timestamp = strtotime($startDate);
+		$newStartDate = date('m/d', $old_date_timestamp);
+		$old_date_timestamp2 = strtotime($endDate);
+		$newEndDate = date('m/d', $old_date_timestamp2);
 
-Japan trip from 3/26 - 4/4 with travelers:
-Hayao Miyazaki, male, age 65
-Tynan Smith, male, age 31
+		echo $destinationCity . " trip from " . $newStartDate . " - " . $newEndDate . " with travelers:<br />";
+		// echo $firstName . " " . $lastName . ", " . $fullSex . ", age " . $age . "<br />";
+
 	}
 }
 
@@ -268,5 +275,6 @@ echo $japanTrip;
 echo $leo;
 
 $japanTrip->addTraveler($leo);
+$japanTrip->showSummary();
 
 ?>
