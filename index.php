@@ -140,7 +140,7 @@ class Trip {
 	public function dupeCheck() {
 		global $link;
 
-		// checks to see if there's already a record with same first & last name
+		// checks to see if there's already a record with same first & last name in trips table
 		$dupeSql = "SELECT * FROM trips WHERE DepartureCity = '"
 		. $this->departureCity . "'
 		AND DestinationCity = '" . $this->destinationCity . "'";
@@ -185,7 +185,7 @@ class Trip {
 	}
 
 	public function addTraveler($addedTraveler) {
-		// to associate traveler with current trip, adds traveler to addTraveler table
+		// to associate traveler with current trip, adds traveler to traveler_trip table
 		global $link;
 
 		// Escape strings - put traveler and trip data into variables
@@ -214,12 +214,66 @@ class Trip {
 		$resultArray = mysqli_fetch_array($result);
 		$tripID = $resultArray['TripId'];
 
-		// Insert trip and traveler IDs into traveler_trip table
+
+		// Insert into table only if not duplicate
+		If (!$this->travelerTripDuplicateCheck()) {
 		$sqlquery = "INSERT INTO traveler_trip
 			(tripID,travelerID) VALUES('"
 				. $tripID . "','"
 				. $travelerID . "')";			$results = mysqli_query($link, $sqlquery);
 		echo "Success ... added " . $firstName . " " . $lastName . " to the trip from " . $departureCity . " to " . $destinationCity . " in our database. </br />";
+		} else {
+			echo "Sorry, my friend, " . $firstName . " " . $lastName . " is already on the " . $destinationCity   . " trip in our database.<br />";
+		}
+
+
+		// Insert trip and traveler IDs into traveler_trip table
+
+	}
+
+	// checks to see if there's already a record with same data in traveler_trip table
+	public function travelerTripDuplicateCheck() {
+		global $link;
+
+		// Escape strings - put traveler and trip data into variables
+		$firstName = mysqli_real_escape_string($link, $addedTraveler->firstName);
+		$lastName = mysqli_real_escape_string($link, $addedTraveler->lastName);
+		$departureCity = mysqli_real_escape_string($link, $this->departureCity);
+		$destinationCity = mysqli_real_escape_string($link, $this->destinationCity);
+
+		// look up traveler ID from traveler table
+		$result = mysqli_query($link,"SELECT * FROM travelers 
+		WHERE FirstName = '"
+			. $firstName . "'
+			AND LastName = '" . $lastName . "'");
+
+		// put traveler's UserId into travelerID variable
+		$resultArray = mysqli_fetch_array($result);
+		$travelerID = $resultArray['UserId'];
+
+		// look up trip ID from trip table
+		$result = mysqli_query($link,"SELECT * FROM trips 
+		WHERE DepartureCity = '"
+			. $departureCity . "'
+			AND DestinationCity = '" . $destinationCity . "'");
+
+		// put trip's TripID into tripID variable
+		$resultArray = mysqli_fetch_array($result);
+		$tripID = $resultArray['TripId'];
+
+		// now check travler_trip table to see if these are already matched
+		$dupeSql = "SELECT * FROM traveler_trip WHERE tripID = '"
+		. $tripID . "'
+		AND travelerID = '" . $travelerID . "'";
+
+		$result = mysqli_query($link, $dupeSql);
+		$dupeCount = mysqli_num_rows($result);
+
+		if ($dupeCount > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public function showSummary() {
@@ -242,17 +296,20 @@ class Trip {
 		$startDate = $resultArray['StartDate'];
 		$endDate = $resultArray['EndDate'];
 
+		// test tripID value -- FOR DEBUGGING
+		echo "tripID is " . $tripID . "<br />";
+
 		// look up associated travelers from traveler_trip table
-		$result = mysqli_query($link,"SELECT travelerID FROM traveler_trip 
+		$result = mysqli_query($link,"SELECT * FROM traveler_trip 
 		WHERE tripID = '"
 			. $tripID . "'");
 
 		// put travelerIDs into variables
 		// NOTE: NEED TO FIGURE OUT HOW TO PUT MULTIPLE TRIPS INTO MULTIPLE VARIABLES
-		while ($row = mysql_fetch_assoc($result)) {
-			$travlerIDs[] = $row['id'];
-			echo $travelerIDs['id'];
-		}
+
+    	echo "result is " . mysqli_free_result($result) . "<br />";
+
+
 
 		// convert date format
 		$old_date_timestamp = strtotime($startDate);
