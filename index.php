@@ -39,9 +39,9 @@ class Traveler {
 				. $age . "','"
 				. $sex . "')";
 		$results = mysqli_query($link, $sqlquery);
-			echo "Success ... added " . $firstName . " " . $lastName . " to database. </br />";
+			echo "Success ... added " . $firstName . " " . $lastName . " to database. </br /><br />";
 		} else {
-			echo "Sorry, " . $this->firstName . " " . $this->lastName . " is already in our database.<br />";
+			echo "Sorry, " . $this->firstName . " " . $this->lastName . " is already in our database.<br /><br />";
 		}
 	}
 
@@ -90,7 +90,7 @@ class Traveler {
 		}
 
 		// then create string to return when class is echoed as a string
-		return $this->firstName . " " . $this->lastName . ", age " . $this->age . ", " . $fullSex . "<br />";
+		return $this->firstName . " " . $this->lastName . ", age " . $this->age . ", " . $fullSex . "<br /><br />";
 	}
 
 }
@@ -131,9 +131,9 @@ class Trip {
 				. $destinationCity . "','"
 				. $startDate . "','"
 				. $endDate . "')";			$results = mysqli_query($link, $sqlquery);
-			echo "Success ... added " . $departureCity . " to " . $destinationCity . " trip to our database. </br />";
+			echo "Success ... added " . $departureCity . " to " . $destinationCity . " trip to our database. </br /><br />";
 		} else {
-			echo "Sorry, my friend, " . $departureCity . " to " . $destinationCity . " trip is already in our database.<br />";
+			echo "Sorry, " . $departureCity . " to " . $destinationCity . " trip is already in our database.<br /><br />";
 		}
 	}
 
@@ -155,8 +155,8 @@ class Trip {
 		}
 	}
 
+	// function looks up name in trip database, loads data into variables
 	public function load() {
-		// function looks up name in trip database, loads data into variables
 		global $link;
 
 		// first looks up the row that has a match between departureCity and destinationCity
@@ -174,18 +174,13 @@ class Trip {
 	}
 
 	public function __toString() {
-		// convert date format
-		$old_date_timestamp = strtotime($this->startDate);
-		$newStartDate = date('m/d', $old_date_timestamp);
-		$old_date_timestamp2 = strtotime($this->endDate);
-		$newEndDate = date('m/d', $old_date_timestamp2);
 
 		// create string to return when class is echoed as a string
-		return "Trip data: " . $this->departureCity . " to " . $this->destinationCity . " from " . $newStartDate . " to " . $newEndDate . "<br />";
+		return "Trip data: " . $this->departureCity . " to " . $this->destinationCity . " from " . $this->convertStartDate() . " to " . $this->convertEndDate() . "<br />";
 	}
 
+	// to associate traveler with current trip, adds traveler to traveler_trip table
 	public function addTraveler($addedTraveler) {
-		// to associate traveler with current trip, adds traveler to traveler_trip table
 		global $link;
 
 		// Escape strings - put traveler and trip data into variables
@@ -216,52 +211,22 @@ class Trip {
 
 
 		// Insert into table only if not duplicate
-		If (!$this->travelerTripDuplicateCheck()) {
+		If (!$this->travelerTripDuplicateCheck($tripID, $travelerID)) {
 		$sqlquery = "INSERT INTO traveler_trip
 			(tripID,travelerID) VALUES('"
 				. $tripID . "','"
 				. $travelerID . "')";			$results = mysqli_query($link, $sqlquery);
-		echo "Success ... added " . $firstName . " " . $lastName . " to the trip from " . $departureCity . " to " . $destinationCity . " in our database. </br />";
+		echo "Success ... added " . $firstName . " " . $lastName . " to the trip from " . $departureCity . " to " . $destinationCity . " in our database. </br /><br />";
 		} else {
-			echo "Sorry, my friend, " . $firstName . " " . $lastName . " is already on the " . $destinationCity   . " trip in our database.<br />";
+			echo "Sorry, " . $firstName . " " . $lastName . " is already on the " . $destinationCity   . " trip in our database.<br /><br />";
 		}
-
-
-		// Insert trip and traveler IDs into traveler_trip table
-
 	}
 
 	// checks to see if there's already a record with same data in traveler_trip table
-	public function travelerTripDuplicateCheck() {
+	public function travelerTripDuplicateCheck($tripID, $travelerID) {
 		global $link;
 
-		// Escape strings - put traveler and trip data into variables
-		$firstName = mysqli_real_escape_string($link, $addedTraveler->firstName);
-		$lastName = mysqli_real_escape_string($link, $addedTraveler->lastName);
-		$departureCity = mysqli_real_escape_string($link, $this->departureCity);
-		$destinationCity = mysqli_real_escape_string($link, $this->destinationCity);
-
-		// look up traveler ID from traveler table
-		$result = mysqli_query($link,"SELECT * FROM travelers 
-		WHERE FirstName = '"
-			. $firstName . "'
-			AND LastName = '" . $lastName . "'");
-
-		// put traveler's UserId into travelerID variable
-		$resultArray = mysqli_fetch_array($result);
-		$travelerID = $resultArray['UserId'];
-
-		// look up trip ID from trip table
-		$result = mysqli_query($link,"SELECT * FROM trips 
-		WHERE DepartureCity = '"
-			. $departureCity . "'
-			AND DestinationCity = '" . $destinationCity . "'");
-
-		// put trip's TripID into tripID variable
-		$resultArray = mysqli_fetch_array($result);
-		$tripID = $resultArray['TripId'];
-
-		// now check travler_trip table to see if these are already matched
+		// check travler_trip table to see if these are already matched
 		$dupeSql = "SELECT * FROM traveler_trip WHERE tripID = '"
 		. $tripID . "'
 		AND travelerID = '" . $travelerID . "'";
@@ -276,8 +241,8 @@ class Trip {
 		}
 	}
 
+	// function displays relevant info about a trip, including trip dates, traveler info, and average age
 	public function showSummary() {
-		// function displays relevant info about a trip, including trip dates, traveler info, and average age
 		global $link;
 
 		// Escape strings - put trip data into variables
@@ -296,36 +261,67 @@ class Trip {
 		$startDate = $resultArray['StartDate'];
 		$endDate = $resultArray['EndDate'];
 
-		// test tripID value -- FOR DEBUGGING
-		echo "tripID is " . $tripID . "<br />";
-
 		// look up associated travelers from traveler_trip table
 		$result = mysqli_query($link,"SELECT * FROM traveler_trip 
 		WHERE tripID = '"
 			. $tripID . "'");
 
 		// put travelerIDs into variables
-		// NOTE: NEED TO FIGURE OUT HOW TO PUT MULTIPLE TRIPS INTO MULTIPLE VARIABLES
+		$i = 0;
+		while ($row = mysqli_fetch_assoc($result)) {
+			$travelerIDs[$i] = $row['travelerID'];
+			$i++;
+		}
 
-    	echo "result is " . mysqli_free_result($result) . "<br />";
+		echo $destinationCity . " trip from " . $this->convertStartDate() . " - " . $this->convertEndDate() . " with travelers:<br />";
 
+		// now lookup traveler info and echo, adding age to averageAge variable
+		$j = 0;
+		$averageAge = 0;
+		foreach ($travelerIDs as $value) {
+			$travelerResult = mysqli_query($link,"SELECT * FROM travelers 
+				WHERE UserId = '"
+				. $value . "'");
+			$travelerResultArray[$j] = mysqli_fetch_array($travelerResult);
 
+			// change sex to full word
+			if ($travelerResultArray[$j]['Sex'] == 'M') {
+				$fullSex = 'Male';
+			} elseif ($travelerResultArray[$j]['Sex'] == 'F') {
+				$fullSex = 'Female';
+			}
 
-		// convert date format
-		$old_date_timestamp = strtotime($startDate);
+			// now echo the traveler's info
+			echo $travelerResultArray[$j]['FirstName'] . " " . $travelerResultArray[$j]['LastName'] . ", " . $fullSex . ", age " . $travelerResultArray[$j]['Age'] . "<br />";
+						// change sex to full word
+			$averageAge = $averageAge + $travelerResultArray[$j]['Age'];
+			$j++;
+		}
+
+		// now calculate and print average age
+		$averageAge = $averageAge/$j;
+		echo "Average age of travelers is " . $averageAge . "<br />";
+
+	}
+
+	// convert date format for start date
+	public function convertStartDate() {
+		$old_date_timestamp = strtotime($this->startDate);
 		$newStartDate = date('m/d', $old_date_timestamp);
-		$old_date_timestamp2 = strtotime($endDate);
+		return $newStartDate;
+	}
+
+	// convert date format for end date
+	public function convertEndDate() {
+		$old_date_timestamp2 = strtotime($this->endDate);
 		$newEndDate = date('m/d', $old_date_timestamp2);
-
-		echo $destinationCity . " trip from " . $newStartDate . " - " . $newEndDate . " with travelers:<br />";
-		// echo $firstName . " " . $lastName . ", " . $fullSex . ", age " . $age . "<br />";
-
+		return $newEndDate;
 	}
 }
 
 $japanTrip = new Trip("San Francisco","Tokyo","2013-03-26","2013-04-07");
 $japanTrip->save();
-$leo = new Traveler("Hiyao", "Miyazaki", "80", "M");
+$leo = new Traveler("Leo", "Babauta", "39", "M");
 $leo->save();
 
 echo $japanTrip;
