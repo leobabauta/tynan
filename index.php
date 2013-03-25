@@ -3,7 +3,7 @@ require_once 'mysql.php';
 
 class Traveler {
 	// Properties of a traveler
-	// Note: UserID isn't necessary as it's auto-incremented
+	public $travelerID;
 	public $firstName;
 	public $lastName;
 	public $age;
@@ -38,10 +38,25 @@ class Traveler {
 				. $lastName . "','"
 				. $age . "','"
 				. $sex . "')";
-		$results = mysqli_query($link, $sqlquery);
+			$results = mysqli_query($link, $sqlquery);
+			$this->travelerID = mysqli_insert_id($link);
+
+			// testing new variable
+			echo "testing insert id ... travelerID equals" . $this->travelerID . "<br />";
+
 			echo "Success ... added " . $firstName . " " . $lastName . " to database. </br /><br />";
 		} else {
+			// looking up userID and putting into this->travelerID
+			// NOTE: doesn't work as line 54 returns an object not a string ******
+			$idLookup = "SELECT UserId FROM travelers WHERE firstName = '"
+				. $this->firstName . "'
+				AND lastName = '" . $this->lastName . "'";
+			$this->travelerID = mysqli_query($link, $idLookup);
+
 			echo "Sorry, " . $this->firstName . " " . $this->lastName . " is already in our database.<br /><br />";
+
+			// testing new variable
+			echo "but also ... testing insert id ... travelerID equals" . $this->travelerID . "<br />";
 		}
 	}
 
@@ -97,11 +112,11 @@ class Traveler {
 
 class Trip {
 	// Properties of a trip
-	// Note: UserID isn't necessary as it's auto-incremented
 	public $departureCity;
 	public $destinationCity;
 	public $startDate;
 	public $endDate;
+	public $travelerID;
 
 	public function __construct($departureCity, $destinationCity, $startDate = null, $endDate = null) {
 		$this->departureCity = $departureCity;
@@ -321,7 +336,7 @@ class Trip {
 
 $japanTrip = new Trip("San Francisco","Tokyo","2013-03-26","2013-04-07");
 $japanTrip->save();
-$leo = new Traveler("Leo", "Babauta", "39", "M");
+$leo = new Traveler("Leo", "Smith", "39", "M");
 $leo->save();
 
 echo $japanTrip;

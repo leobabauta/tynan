@@ -7,3 +7,37 @@ Hayao Miyazaki, male, age 65
 Tynan Smith, male, age 31
 
 2. Just for fun, make it also report the average age of the travelers.
+
+
+-----
+
+
+I didn't have time to properly critique your programming today, so for tomorrow make the change I talked about in the RV--- saving and loading should populate userID form traveler, and then you shouldn't have to mess with first/last name in the addtraveler function.
+----
+
+
+The one thing I think you haven't quite gotten is the benefits of classes. You're using them, but not leveraging them.
+
+For example, all of the database queries in showSummary should raise a huge red flag. In particular, you've copied and pasted from load(). That will literally never be the right way to do it. The point of load is so that you can reuse it in many functions. In SETT, $blog->load() is probably used in 100 different places. Imagine if we rewrote the db query in each one!
+
+It's important, when designing a class, to know what the one unique identifer is going to be. There may be several, but there's one you'll count on. For example, in SETT we have site_id for blogs, user_id for users, and uid for posts (universal ID). 
+
+In your program, the way it should work is this:
+
+When saving Trip, it gets the insert_id (which should be the tripid) and saves it as a property of the object.
+
+When showing the summary, you should assume that the tripid is always set. Why? Because any scenario where you'd call that function would be preceded by either a load() or save(). I say that because you can't add a traveler without knowing the tripid... and any time where you'd try to show the summary, you would have added a traveler.
+
+OR... if you might sometimes load an empty one, you could do something like this:
+
+if (!isset($this->tripID) && !$this->load()) {
+    return false;
+} 
+
+That's saying-- if this thing doesn't have an id and the load fails, just return nothing. For this to work, of course, you'd also have to be returning false in load if there's no matching database entry.
+
+---
+
+showSummary should be MUCH shorter and not duplicate any code. Here's how I would do it http://pastebin.com/2VtBUD76  (it might need small tweaks to actually run--I haven't tested it, but the principles are right. For one, tripID has to be populated in save/load)
+
+Big points from that pastebin-- I don't want to write a mini load function in the middle of show summary, so I assume it's already loaded and I use the traveler class rather than rewriting a bunch of it in showsummary.
